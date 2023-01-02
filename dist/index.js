@@ -9696,7 +9696,9 @@ async function main() {
     const time = (new Date()).toTimeString();
     core.setOutput("time", time);
 
-    let id_token = await core.getIDToken()
+    const aud = new URL(`/functions/${'some-function-id'}`, 'https://console.bls.dev');
+    console.log('aud', aud.href)
+    let id_token = await core.getIDToken(aud.href)
     console.log('id_token', id_token)
     core.setOutput('id_token', id_token)
 

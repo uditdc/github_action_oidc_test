@@ -1,3 +1,4 @@
+import got from 'got'
 const core = require("@actions/core");
 const github = require("@actions/github");
 
@@ -14,7 +15,7 @@ async function main() {
     console.log('id_token', id_token)
     core.setOutput('id_token', id_token)
 
-    await fetch('https://cold-heron-19.deno.dev', {
+    await got.get('https://cold-heron-19.deno.dev', {
       headers: {
         'Authorization': 'Bearer ' + id_token
       }

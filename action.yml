@@ -33,7 +33,7 @@ runs:
       run: |-
         OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
         OIDC_JWT=$(echo $OIDC_TOKEN | jq -j '.value')
-        RESPONSE=$(curl -sLS -X POST "${{inputs.BLOCKLESS_ENDPOINT_URL}}" -H "Authorization: GithubOIDC $OIDC_JWT")
+        RESPONSE=$(curl -sLS -X POST "${{inputs.BLOCKLESS_ENDPOINT_URL}}/api/auth/swap" -H "Authorization: GithubOIDC $OIDC_JWT")
         if [[ "$RESPONSE" == *"error"* ]];
         then
           ERROR=$(echo $RESPONSE | jq -j '.error')

@@ -34,6 +34,7 @@ jobs:
         shell: bash
         run: |-
           OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
-          JWT=$(echo $OIDC_TOKEN | jq -j '.value')
           echo $OIDC_TOKEN
-          curl -sLS "https://cold-heron-19.deno.dev" -H "Authorization: Bearer $JWT"
+          OIDC_JWT=$(echo $OIDC_TOKEN | jq -j '.value')
+          JWT=$(curl -sLS "https://cold-heron-19.deno.dev" -H "Authorization: GithubOIDC $OIDC_JWT")
+          echo $JWT

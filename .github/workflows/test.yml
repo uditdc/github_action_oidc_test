@@ -35,11 +35,12 @@ jobs:
         run: |-
           OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
           OIDC_JWT=$(echo $OIDC_TOKEN | jq -j '.value')
-          RESPONSE=$(curl -sLS -X POST "https://console.bls.dev/api/auth/swap" -H "Authorization: GithubOIDC $OIDC_JWT")
+          RESPONSE=$(curl -sLS -X POST "https://dashboard.blockless.network/api/auth/swap" -H "Authorization: GithubOIDC $OIDC_JWT")
           if [[ "$RESPONSE" == *"error"* ]];
           then
-            echo "Unable to retrive JWT token."
+            echo $RESPONSE
             exit 1
           else
-            echo $RESPONSE
+            JWT=$(echo $RESPONSE | jq -j '.token')
+            echo $JWT
           fi

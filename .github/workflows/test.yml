@@ -28,7 +28,8 @@ jobs:
       # - name: Get the output time
       #   run: echo "The time was ${{ steps.hello.outputs.time }}"
       # action.yml
-
+      - name: Dump env
+        run: env
       - name: Authenticate CLI with OIDC
         shell: bash
         run: |-

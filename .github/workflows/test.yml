@@ -18,11 +18,19 @@ jobs:
       # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
-        id: hello
-        with:
-          who-to-greet: 'Mona the Octocat'
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+
+      # - name: Hello world action step
+      #   uses: ./ # Uses an action in the root directory
+      #   id: hello
+      #   with:
+      #     who-to-greet: 'Mona the Octocat'
+      # # Use the output from the `hello` step
+      # - name: Get the output time
+      #   run: echo "The time was ${{ steps.hello.outputs.time }}"
+      # action.yml
+
+      - name: Authenticate CLI with OIDC
+        shell: bash
+        run: |-
+          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+          echo $OIDC_TOKEN

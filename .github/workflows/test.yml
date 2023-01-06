@@ -32,5 +32,3 @@ jobs:
         run: env
       - name: Run action
         uses: ./
-        with:
-          BLOCKLESS_ENDPOINT_URL: "https://cold-heron-19.deno.dev"

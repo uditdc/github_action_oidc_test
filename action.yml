@@ -1,13 +1,50 @@
-name: 'github_action_oidc_test'
-description: 'Greet someone and record the time'
+name: "Setup function test"
+description: "Installs the Blockless CLI"
+
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
-outputs:
-  time: # id of output
-    description: 'The time we greeted you'
+  BLOCKLESS_ENDPOINT_URL:
+    description: "URL for the blockless endpoint"
+    default: "https://dashboard.blockless.network"
+    required: false
+  BLOCKLESS_ACCESS_TOKEN:
+    description: "Your access token for the Blockless Console"
+    required: false
+
+branding:
+  icon: "box"
+  color: "green"
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "composite"
+  steps:
+    - name: Install Blockless CLI
+      shell: bash
+      run: |-
+        sudo sh -c "curl https://raw.githubusercontent.com/BlocklessNetwork/cli/main/download.sh | bash"
+
+    - if: ${{ inputs.BLOCKLESS_ACCESS_TOKEN != null }}
+      name: Authenticate CLI with token
+      shell: bash
+      run: |-
+        bls login --auth-token ${{inputs.BLOCKLESS_ACCESS_TOKEN}}
+
+    - if: ${{ inputs.BLOCKLESS_ACCESS_TOKEN == null }}
+      name: Authenticate CLI with OIDC
+      shell: bash
+      run: |-
+        OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+        OIDC_JWT=$(echo $OIDC_TOKEN | jq -j '.value')
+        RESPONSE=$(curl -sLS -X POST "${{inputs.BLOCKLESS_ACCESS_TOKEN}}" -H "Authorization: GithubOIDC $OIDC_JWT")
+        if [[ "$RESPONSE" == *"error"* ]];
+        then
+          ERROR=$(echo $RESPONSE | jq -j '.error')
+          echo $ERROR
+          exit 1
+        else
+          JWT=$(echo $RESPONSE | jq -j '.token')
+          echo $JWT
+        fi
+
+    - name: Verify Auth Token
+      shell: bash
+      run: |-
+        bls whoami

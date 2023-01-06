@@ -38,7 +38,8 @@ jobs:
           RESPONSE=$(curl -sLS -X POST "https://dashboard.blockless.network/api/auth/swap" -H "Authorization: GithubOIDC $OIDC_JWT")
           if [[ "$RESPONSE" == *"error"* ]];
           then
-            echo $RESPONSE
+            ERROR=$(echo $RESPONSE | jq -j '.error')
+            echo $ERROR
             exit 1
           else
             JWT=$(echo $RESPONSE | jq -j '.token')

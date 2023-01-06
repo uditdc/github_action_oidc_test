@@ -41,7 +41,7 @@ runs:
           exit 1
         else
           JWT=$(echo $RESPONSE | jq -j '.token')
-          echo $JWT
+          bls login --auth-token $JWT
         fi
 
     - name: Verify Auth Token
